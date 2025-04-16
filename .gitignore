@@ -1,5 +1,7 @@
 # Logs
 logs
+
+
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -64,6 +66,11 @@ node_modules/
 
 # dotenv environment variables file
 .env
+.env.production
+
+# ignore folders
+src/
 
 # dataconnect generated files
 .dataconnect
+nodemon.json
