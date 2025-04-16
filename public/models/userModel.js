@@ -16,10 +16,13 @@ const userSchema = new mongoose_1.default.Schema({
     password: {
         type: String,
         required: true,
+        minlength: 6
     },
     phone: {
         type: String,
         required: true,
+        minlength: 10,
+        maxlength: 15
     },
     creator: {
         type: String,

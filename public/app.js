@@ -40,14 +40,19 @@ exports.api = void 0;
 const express_1 = __importDefault(require("express"));
 const db_1 = __importDefault(require("./config/db"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const authenticationRoutes_1 = __importDefault(require("./routes/authenticationRoutes"));
 const functions = __importStar(require("firebase-functions"));
 const app = (0, express_1.default)();
 const PORT = process.env.APP_PORT || 5000;
 app.use(express_1.default.json());
 // Database connection
 (0, db_1.default)();
-// Listen to these Routes 
+// Listen to these Routes
 app.use(userRoutes_1.default);
+app.use(authenticationRoutes_1.default);
+app.use((req, res, next) => {
+    res.status(404).json({ message: "Route not found" });
+});
 app.listen(PORT, () => {
     console.log(`Server is running on ${process.env.APP_HOST}`);
 });

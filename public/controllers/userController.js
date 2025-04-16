@@ -29,24 +29,6 @@ class UserController {
             }
         });
     }
-    createUser(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const user = new userModel_1.default({
-                    email: req.body.email,
-                    name: req.body.name,
-                    password: req.body.password,
-                    phone: req.body.phone,
-                    creator: req.body.creator
-                });
-                yield user.save();
-                res.status(201).json(user);
-            }
-            catch (error) {
-                res.status(500).json({ message: error.message });
-            }
-        });
-    }
     getUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
