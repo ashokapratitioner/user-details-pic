@@ -1,10 +1,19 @@
 {
   "name": "user-details-pic",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "public/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "nodemon dist/app.js"
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions:api",
+    "logs": "firebase functions:log",
+    "start:dev": "nodemon public/app.js"
+  },
+  "engines": {
+    "node": "20"
   },
   "keywords": [],
   "author": "",
@@ -14,12 +23,15 @@
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
     "mongodb": "^6.15.0",
-    "mongoose": "^8.13.2"
+    "mongoose": "^8.13.2",
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^6.0.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
     "@types/node": "^22.14.1",
     "nodemon": "^3.1.9",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "firebase-functions-test": "^3.1.0"
   }
 }

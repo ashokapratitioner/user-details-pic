@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const password = encodeURIComponent(process.env.DB_PASSWORD || "");
-const mongoDbConnectionString = `mongodb+srv://${process.env.DB_USERNAME}:${password}${process.env.DB_NAME}.${process.env.DB_CLUSTER_DOMAIN}/?retryWrites=true&w=majority&appName=${process.env.APP_NAME}`;
+const mongoDbConnectionString = `mongodb+srv://${process.env.DB_USERNAME}:${password}@${process.env.DB_CLUSTER_DOMAIN}/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=${process.env.APP_NAME}`;
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose_1.default.connect(mongoDbConnectionString);
