@@ -9,6 +9,6 @@ const router = (0, express_1.Router)();
 const authenticationController = new authenticationController_1.default();
 router.post('/login', authenticationController.login.bind(authenticationController));
 router.post('/signup', authenticationController.signUp);
-router.get('/logout', authenticationController.logout);
-router.get('/refresh-token', authenticationController.refreshToken.bind(authenticationController));
+router.post('/logout', authenticationController.logout);
+router.post('/refresh-token', authenticationController.refreshToken.bind(authenticationController));
 exports.default = router;
