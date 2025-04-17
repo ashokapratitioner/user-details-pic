@@ -16,7 +16,6 @@ const jwt_1 = require("../token/jwt");
 const userModel_1 = __importDefault(require("../models/userModel"));
 const password_1 = require("../services/password");
 class AuthenticationController {
-    constructor() { }
     setTokenAsCookie(res, user) {
         const ACCESS_SECRET = process.env.ACCESS_SECRET;
         const REFRESH_SECRET = process.env.REFRESH_SECRET;
@@ -58,10 +57,11 @@ class AuthenticationController {
     signUp(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const hashedPassword = yield (0, password_1.hashPassword)(req.body.password);
                 const user = new userModel_1.default({
                     email: req.body.email,
                     name: req.body.name,
-                    password: (0, password_1.hashPassword)(req.body.password),
+                    password: hashedPassword,
                     phone: req.body.phone,
                     creator: req.body.creator,
                 });

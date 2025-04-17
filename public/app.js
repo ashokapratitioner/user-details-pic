@@ -40,6 +40,7 @@ exports.api = void 0;
 const express_1 = __importDefault(require("express"));
 const db_1 = __importDefault(require("./config/db"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const addressRoutes_1 = __importDefault(require("./routes/addressRoutes"));
 const authenticationRoutes_1 = __importDefault(require("./routes/authenticationRoutes"));
 const functions = __importStar(require("firebase-functions"));
 const verifyTokenMiddleware_1 = require("./middleware/verifyTokenMiddleware");
@@ -53,6 +54,7 @@ app.use(express_1.default.json());
 app.use(authenticationRoutes_1.default);
 app.use((0, cookie_parser_1.default)());
 app.use('/user', verifyTokenMiddleware_1.verifyTokenMiddleware, userRoutes_1.default);
+app.use('/address', verifyTokenMiddleware_1.verifyTokenMiddleware, addressRoutes_1.default);
 app.use((req, res) => {
     res.status(404).json({ message: "Route not found" });
 });

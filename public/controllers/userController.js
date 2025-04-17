@@ -34,7 +34,7 @@ class UserController {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
             try {
-                const user = yield userModel_1.default.findById(id);
+                const user = yield userModel_1.default.findById(id).populate("address");
                 if (!user) {
                     return res.status(404).json({ message: "User not found" });
                 }
@@ -45,7 +45,7 @@ class UserController {
             }
         });
     }
-    getUsers(req, res) {
+    getUsers(_req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const users = yield userModel_1.default.find();
@@ -59,8 +59,7 @@ class UserController {
     updateUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = req.params;
-            let user;
-            user = yield userModel_1.default.findById(id);
+            let user = yield userModel_1.default.findById(id);
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
             }
