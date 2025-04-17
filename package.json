@@ -31,6 +31,7 @@
     "mongoose": "^8.13.2"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.8",
     "@types/express": "^5.0.1",
     "@types/node": "^22.14.1",
     "firebase-functions-test": "^3.1.0",

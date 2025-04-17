@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const jwt_1 = require("../token/jwt");
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const userModel_1 = __importDefault(require("../models/userModel"));
+const password_1 = require("../services/password");
 class AuthenticationController {
     constructor() { }
     setTokenAsCookie(res, user) {
@@ -31,13 +31,13 @@ class AuthenticationController {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
-            maxAge: 15 * 60 * 1000, // 15 minutes
+            maxAge: jwt_1.accessTokenTimeout
         });
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
-            maxAge: 15 * 60 * 1000, // 15 minutes
+            maxAge: jwt_1.refreshTokenTimeout
         });
     }
     login(req, res) {
@@ -47,8 +47,8 @@ class AuthenticationController {
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
             }
-            const isPasswordValid = yield bcryptjs_1.default.compare(password, user.password);
-            if (!isPasswordValid) {
+            const passwordMatch = yield (0, password_1.hasValidPassword)(password, user.password);
+            if (!passwordMatch) {
                 return res.status(401).json({ message: "Invalid credential" });
             }
             this.setTokenAsCookie(res, user);
@@ -58,11 +58,10 @@ class AuthenticationController {
     signUp(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const hashedPassword = yield bcryptjs_1.default.hashSync(req.body.password, 12);
                 const user = new userModel_1.default({
                     email: req.body.email,
                     name: req.body.name,
-                    password: hashedPassword,
+                    password: (0, password_1.hashPassword)(req.body.password),
                     phone: req.body.phone,
                     creator: req.body.creator,
                 });

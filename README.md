@@ -5,7 +5,7 @@ This project is a simple Express application that implements CRUD (Create, Read,
 ## Project Structure
 
 ```
-express-mongoose-crud
+
 ├── src
 │   ├── app.ts                # Entry point of the application
 │   ├── controllers
@@ -18,6 +18,8 @@ express-mongoose-crud
 │       └── db.ts             # Database connection configuration
 ├── package.json               # NPM package configuration
 ├── tsconfig.json              # TypeScript configuration
+├── nodemon.json              # Nodemon env configurations
+├── firebase.json, .firebaserc             # Firebase configurations
 └── README.md                  # Project documentation
 ```
 
@@ -26,7 +28,7 @@ express-mongoose-crud
 1. **Clone the repository:**
    ```
    git clone <repository-url>
-   cd express-mongoose-crud
+   cd user-details-pic
    ```
 
 2. **Install dependencies:**
@@ -35,7 +37,7 @@ express-mongoose-crud
    ```
 
 3. **Set up MongoDB:**
-   Ensure you have MongoDB installed and running. You can use a local instance or a cloud service like MongoDB Atlas. Update the connection string in `src/config/db.ts` accordingly.
+   Ensure you have MongoDB installed and running. You can use a local instance or a cloud service like MongoDB Atlas. Update the connection string in `src/config/db.ts` accordingly. 
 
 4. **Run the application:**
    ```
@@ -46,14 +48,14 @@ express-mongoose-crud
 
 - **Create a User:**
   - Endpoint: `POST /users`
-  - Body: `{ "name": "John Doe", "email": "john@example.com" }`
+  - Body: `{ "email": "ashok@test.com", "password": "password" }`
 
 - **Get a User:**
   - Endpoint: `GET /users/:id`
 
 - **Update a User:**
   - Endpoint: `PUT /users/:id`
-  - Body: `{ "name": "Jane Doe" }`
+  - Body: `{ "email": "ashok@test.com" }`
 
 - **Delete a User:**
   - Endpoint: `DELETE /users/:id`

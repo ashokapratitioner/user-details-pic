@@ -12,6 +12,9 @@ const userSchema = new mongoose_1.default.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
+        match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        immutable: true
     },
     password: {
         type: String,
@@ -22,7 +25,8 @@ const userSchema = new mongoose_1.default.Schema({
         type: String,
         required: true,
         minlength: 10,
-        maxlength: 15
+        maxlength: 15,
+        unique: true
     },
     creator: {
         type: String,

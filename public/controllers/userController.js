@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const userModel_1 = __importDefault(require("../models/userModel"));
+const password_1 = require("../services/password");
 class UserController {
     constructor() {
         this.deleteuser = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -63,8 +64,24 @@ class UserController {
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
             }
-            const updatedUser = Object.assign({ user }, req.body);
-            user = updatedUser;
+            const { phone, email, name, password } = req.body;
+            if (!!email && user.email !== email) {
+                return res.status(400).json({ message: "Email cannot be changed" });
+            }
+            let hashedPassword = user.password;
+            const hasPasswordChanged = yield (0, password_1.hasValidPassword)(password, hashedPassword);
+            if (!hasPasswordChanged) {
+                hashedPassword = yield (0, password_1.hashPassword)(password);
+            }
+            const creatorId = res.userId;
+            if (phone)
+                user.phone = phone;
+            if (name)
+                user.name = name;
+            if (password)
+                user.password = hashedPassword;
+            if (creatorId)
+                user.creator = creatorId;
             try {
                 yield user.save();
                 res.status(200).json(user);
