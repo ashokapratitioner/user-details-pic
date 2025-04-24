@@ -32,6 +32,15 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -45,6 +54,7 @@ const authenticationRoutes_1 = __importDefault(require("./routes/authenticationR
 const functions = __importStar(require("firebase-functions"));
 const verifyTokenMiddleware_1 = require("./middleware/verifyTokenMiddleware");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const connection_1 = require("./rabbitmq/connection");
 const app = (0, express_1.default)();
 const PORT = process.env.APP_PORT || 5000;
 app.use(express_1.default.json());
@@ -58,7 +68,10 @@ app.use('/address', verifyTokenMiddleware_1.verifyTokenMiddleware, addressRoutes
 app.use((req, res) => {
     res.status(404).json({ message: "Route not found" });
 });
-app.listen(PORT, () => {
-    console.log(`Server is running on ${process.env.APP_HOST}`);
-});
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    yield (0, connection_1.connectRabbitMQ)();
+    app.listen(PORT, () => {
+        console.log(`Server is running on ${process.env.APP_HOST}`);
+    });
+}))();
 exports.api = functions.https.onRequest(app);

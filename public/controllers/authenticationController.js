@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jwt_1 = require("../token/jwt");
 const userModel_1 = __importDefault(require("../models/userModel"));
 const password_1 = require("../services/password");
+const publisher_1 = require("../rabbitmq/publisher");
 class AuthenticationController {
     setTokenAsCookie(res, user) {
         const ACCESS_SECRET = process.env.ACCESS_SECRET;
@@ -51,6 +52,7 @@ class AuthenticationController {
                 return res.status(401).json({ message: "Invalid credential" });
             }
             this.setTokenAsCookie(res, user);
+            (0, publisher_1.publishToQueue)("USER_PHONE", JSON.stringify({ email: user.email }));
             res.status(200).json({ message: "Login successful" });
         });
     }
