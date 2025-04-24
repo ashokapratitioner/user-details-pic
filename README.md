@@ -27,7 +27,7 @@ This project is a simple Express application that implements CRUD (Create, Read,
 
 1. **Clone the repository:**
    ```
-   git clone <repository-url>
+   git clone git@github.com:ashokapratitioner/user-details-pic.git
    cd user-details-pic
    ```
 
@@ -47,7 +47,11 @@ This project is a simple Express application that implements CRUD (Create, Read,
 ## Usage
 
 - **Create a User:**
-  - Endpoint: `POST /users`
+  - Endpoint: `POST /signup`
+  - Body: `{ "email": "ashok@test.com", "password": "password", name:"Ashok", phone: "91-YourNumber" }`
+
+- **Login to app:**
+  - Endpoint: `POST /login`
   - Body: `{ "email": "ashok@test.com", "password": "password" }`
 
 - **Get a User:**
