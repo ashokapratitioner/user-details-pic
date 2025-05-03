@@ -13,11 +13,22 @@ exports.consumeFromQueue = consumeFromQueue;
 const connection_1 = require("./connection");
 function consumeFromQueue(queueName) {
     return __awaiter(this, void 0, void 0, function* () {
-        const channel = (0, connection_1.getChannel)();
-        yield channel.assertQueue(queueName);
-        channel.consume(queueName, (msg) => {
-            console.log(`Received from ${queueName}:`, msg.content.toString());
-            channel.ack(msg);
-        });
+        try {
+            const channel = yield (0, connection_1.waitForChannel)();
+            yield channel.assertQueue(queueName);
+            channel.consume(queueName, (msg) => {
+                if (msg) {
+                    console.log(`Received from ${queueName}:`, msg.content.toString());
+                    channel.ack(msg);
+                }
+                else {
+                    console.error(`Consumer received null message from ${queueName}`);
+                }
+            });
+        }
+        catch (error) {
+            console.error(`Error consuming from queue ${queueName}:`, error);
+            setTimeout(() => consumeFromQueue(queueName), 5000); // Retry after 5 seconds
+        }
     });
 }

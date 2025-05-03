@@ -12,25 +12,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.waitForChannel = void 0;
 exports.connectRabbitMQ = connectRabbitMQ;
-exports.getChannel = getChannel;
 const amqplib_1 = __importDefault(require("amqplib"));
 let channel, connection;
+const waitForChannel = (...args_1) => __awaiter(void 0, [...args_1], void 0, function* (timeout = 10000) {
+    const start = Date.now();
+    while (!channel) {
+        if (Date.now() - start > timeout) {
+            throw new Error("Timeout waiting for RabbitMQ channel");
+        }
+        yield new Promise(res => setTimeout(res, 500));
+    }
+    return channel;
+});
+exports.waitForChannel = waitForChannel;
 function connectRabbitMQ() {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, arguments, void 0, function* (retries = 5, delay = 5000) {
         const URL = process.env.RABBITMQ_URL;
         console.log("Rabbit URL: ", URL);
         if (!URL) {
             console.log("Connected to RabbitMQ failed.");
             return;
         }
-        connection = yield amqplib_1.default.connect(URL);
-        channel = yield connection.createChannel();
-        console.log("Connected to RabbitMQ");
+        while (retries) {
+            try {
+                const connection = yield amqplib_1.default.connect(URL);
+                console.log("RabbitMQ connected successfully");
+                return connection;
+            }
+            catch (error) {
+                console.error("Error connecting to RabbitMQ", error);
+                retries -= 1;
+                console.log(`Retrying to connect to RabbitMQ... Attempts remaining: ${retries}`);
+                yield new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
+        throw new Error("Failed to connect to RabbitMQ after multiple attempts");
     });
 }
-function getChannel() {
-    if (!channel)
-        throw new Error("Channel not initialized");
-    return channel;
-}
+process.on("exit", () => {
+    if (connection)
+        connection.close();
+    console.log("RabbitMQ connection closed");
+});

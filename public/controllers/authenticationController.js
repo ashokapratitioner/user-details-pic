@@ -40,19 +40,25 @@ class AuthenticationController {
             maxAge: jwt_1.refreshTokenTimeout
         });
     }
+    clearCookie(res) {
+        res.clearCookie("accessToken");
+        res.clearCookie("refreshToken");
+    }
     login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { email, password } = req.body;
             const user = yield userModel_1.default.findOne({ email });
             if (!user) {
+                this.clearCookie(res);
                 return res.status(404).json({ message: "User not found" });
             }
             const passwordMatch = yield (0, password_1.hasValidPassword)(password, user.password);
             if (!passwordMatch) {
+                this.clearCookie(res);
                 return res.status(401).json({ message: "Invalid credential" });
             }
             this.setTokenAsCookie(res, user);
-            (0, publisher_1.publishToQueue)("USER_PHONE", JSON.stringify({ email: user.email }));
+            (0, publisher_1.publishToQueue)("USER_INFO.RETRIEVAL", user.email);
             res.status(200).json({ message: "Login successful" });
         });
     }
@@ -77,8 +83,7 @@ class AuthenticationController {
     }
     logout(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            res.clearCookie("accessToken");
-            res.clearCookie("refreshToken");
+            this.clearCookie(res);
             res.status(200).json({ message: "Logout successful" });
         });
     }

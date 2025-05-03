@@ -9,13 +9,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.publishToQueue = publishToQueue;
+exports.publishToQueue = void 0;
 const connection_1 = require("./connection");
-function publishToQueue(queueName, message) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const channel = (0, connection_1.getChannel)();
-        yield channel.assertQueue(queueName);
-        channel.sendToQueue(queueName, Buffer.from(message));
-        console.log(`Sent to ${queueName}:`, message);
-    });
-}
+const publishToQueue = (routingKey_1, message_1, ...args_1) => __awaiter(void 0, [routingKey_1, message_1, ...args_1], void 0, function* (routingKey, message, retries = 5, delay = 5000) {
+    while (retries) {
+        try {
+            const channel = yield (0, connection_1.waitForChannel)();
+            const exchangeName = process.env.RABBITMQ_EXCHANGE_NAME;
+            yield channel.assertExchange(exchangeName, "topic", { durable: true });
+            yield channel.publish(exchangeName, routingKey, Buffer.from(JSON.stringify({
+                logType: routingKey,
+                message,
+                dateTime: new Date(),
+            })));
+            console.log(`Sent to exchange name: ${exchangeName} with routing key ${routingKey}`);
+            return; // Exit on success
+        }
+        catch (error) {
+            console.error(`Error publishing to queue with routing key ${routingKey}:`, error);
+            retries -= 1;
+            console.log(`Retrying... Attempts remaining: ${retries}`);
+            yield new Promise((resolve) => setTimeout(resolve, delay));
+        }
+    }
+    console.error(`Failed to publish message to queue after multiple attempts: ${routingKey}`);
+});
+exports.publishToQueue = publishToQueue;

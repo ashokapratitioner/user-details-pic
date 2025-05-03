@@ -55,8 +55,14 @@ const functions = __importStar(require("firebase-functions"));
 const verifyTokenMiddleware_1 = require("./middleware/verifyTokenMiddleware");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const connection_1 = require("./rabbitmq/connection");
+const cors_1 = __importDefault(require("./services/cors"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config({
+    path: `.env.${process.env.NODE_ENV}`
+});
 const app = (0, express_1.default)();
-const PORT = process.env.APP_PORT || 5000;
+const PORT = Number(process.env.APP_PORT) || 5000;
+app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 // Database connection
 (0, db_1.default)();
