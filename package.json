@@ -10,7 +10,7 @@
     "deploy": "firebase deploy --only functions:api",
     "logs": "firebase functions:log",
     "start": "cross-env NODE_ENV=development node public/app.js",
-    "start:dev": "npm run build && npm run start"
+    "start:dev": "npm run build && cross-env NODE_ENV=development nodemon public/app.js"
   },
   "engines": {
     "node": "20"

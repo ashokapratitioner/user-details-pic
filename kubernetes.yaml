@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-details-pic-config
+  namespace: default
+  labels:
+    app: user-details-pic
+data:
+ 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-details-pic
+  labels:
+    app: user-details-pic
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: user-details-pic
+  template:
+    metadata:
+      labels:
+        app: user-details-pic
+    spec:
+      containers:
+      - name: user-details-pic
+        image: user-details-pic:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: DB_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: user-details-pic-config
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: user-details-pic-config
+              key: DB_PASSWORD
+        - name: DB_CLUSTER_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              name: user-details-pic-config
+              key: DB_CLUSTER_DOMAIN
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: user-details-pic-config
+              key: DB_NAME
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: user-details-pic-config
+              key: APP_NAME
+        - name: APP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: user-details-pic-config
+              key: APP_PORT
+        - name: RABBITMQ_URL
+          valueFrom:
+            configMapKeyRef:
+              name: user-details-pic-config
+              key: RABBITMQ_URL
+        - name: RABBITMQ_EXCHANGE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: user-details-pic-config
+              key: RABBITMQ_EXCHANGE_NAME
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-details-pic
+spec:
+  selector:
+    app: user-details-pic
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+  type: LoadBalancer
