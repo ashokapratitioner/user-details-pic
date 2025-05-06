@@ -44,6 +44,31 @@ This project is a simple Express application that implements CRUD (Create, Read,
    npm start
    ```
 
+## Run the Application with Docker
+
+1. **Build the Docker Image:**
+   ```
+   docker build -t user-details-pic .
+   ```
+
+2. **Run the Docker Desktop manually if using Windows locally**
+
+3. **Using Docker Compose:**
+   If you have Docker Compose installed, you can use the following command to start the application along with its dependencies (e.g., MongoDB, RabbitMQ):
+   ```
+   docker-compose up
+   ```
+
+   - To run in production mode:
+     ```
+     docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+     ```
+
+   - To run in development mode:
+     ```
+     docker-compose -f docker-compose.yml -f docker-compose.override.yml up
+     ```
+
 ## Usage
 
 - **Create a User:**
